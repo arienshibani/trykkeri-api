@@ -83,7 +83,9 @@ just watch
 # or: docker compose --profile observability watch
 ```
 
-**Pre-built image** (from [GitHub Container Registry](https://github.com/trykkeri/trykkeri-api/pkgs/container/trykkeri-api)):
+**Pre-built image** 
+
+From Github Container Registry.
 
 ```bash
 docker run -p 8080:8080 ghcr.io/trykkeri/trykkeri-api:latest
