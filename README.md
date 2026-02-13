@@ -5,7 +5,7 @@
 [![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker)](https://www.docker.com/)
 [![Grafana](https://img.shields.io/badge/Grafana-dashboard-F46800?logo=grafana)](https://grafana.com/)
 
-REST API for turning raw HTML into PDF files.
+REST API for turning raw HTML into PDF files, with built-in monitoring.
 
 ## Features ✨
 
