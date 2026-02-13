@@ -83,6 +83,14 @@ just watch
 # or: docker compose --profile observability watch
 ```
 
+**Pre-built image** (from [GitHub Container Registry](https://github.com/trykkeri/trykkeri-api/pkgs/container/trykkeri-api)):
+
+```bash
+docker run -p 8080:8080 ghcr.io/trykkeri/trykkeri-api:latest
+```
+
+Images are published on every push to `main` and when you create a release. Use `:latest`, `:sha-<commit>`, or a version tag (e.g. `:v1.0.0`) after a release.
+
 ### 3. Access the services
 
 - 🔍 **API / Scalar UI** — <http://localhost:8080> (available with either `just run` or `just watch`).
