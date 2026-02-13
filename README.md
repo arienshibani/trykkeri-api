@@ -26,6 +26,15 @@ curl http://localhost:8080/print \
   --data '<h1 style="color: red; text-align: center">Hello world!</h1>'
 ```
 
+### Output 👇
+
+<img width="300" height="888" alt="image" src="https://github.com/user-attachments/assets/d1e50820-57aa-46b0-b3cd-5d0ab4effb5b" />
+
+## Endpoints 🔌
+
+- **`/print`** — `POST` request with HTML in the body → **PDF**.
+- **`/mirror`** — `POST` request with a URL in the body → we fetch the HTML → **PDF** 
+
 ### Optional query parameters 🔧
 
 | Parameter | Type | Description |
