@@ -1,11 +1,14 @@
 package errors
 
 import (
+	"context"
 	"encoding/json"
 	"log/slog"
 	"net/http"
 
 	stderrors "errors"
+
+	"trykkeri-api/internal/middleware"
 )
 
 type ErrorResponse struct {
@@ -13,7 +16,7 @@ type ErrorResponse struct {
 	Message string `json:"message"`
 }
 
-func WriteHTTP(w http.ResponseWriter, err error) {
+func WriteHTTP(ctx context.Context, w http.ResponseWriter, err error) {
 	var status int
 	var code, message string
 
@@ -41,6 +44,8 @@ func WriteHTTP(w http.ResponseWriter, err error) {
 		message = "Internal server error"
 		slog.Error("Internal error", "err", err)
 	}
+
+	middleware.AddRequestLogAttrs(ctx, "error", err.Error())
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)

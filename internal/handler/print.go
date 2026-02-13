@@ -17,17 +17,17 @@ func (h *Handler) Print(w http.ResponseWriter, r *http.Request) {
 
 	body, err := io.ReadAll(io.LimitReader(r.Body, h.cfg.MaxBodyBytes+1))
 	if err != nil {
-		errors.WriteHTTP(w, errors.Internal("failed to read body: %v", err))
+		errors.WriteHTTP(r.Context(), w, errors.Internal("failed to read body: %v", err))
 		return
 	}
 	if int64(len(body)) > h.cfg.MaxBodyBytes {
-		errors.WriteHTTP(w, errors.ErrPayloadTooLarge)
+		errors.WriteHTTP(r.Context(), w, errors.ErrPayloadTooLarge)
 		return
 	}
 
 	html := string(body)
 	if strings.TrimSpace(html) == "" {
-		errors.WriteHTTP(w, errors.InvalidInput("HTML content cannot be empty"))
+		errors.WriteHTTP(r.Context(), w, errors.InvalidInput("HTML content cannot be empty"))
 		return
 	}
 
@@ -48,7 +48,7 @@ func (h *Handler) Print(w http.ResponseWriter, r *http.Request) {
 
 	pdfBytes, err := h.pdfSvc.Render(r.Context(), html, baseURLPtr, opts)
 	if err != nil {
-		errors.WriteHTTP(w, err)
+		errors.WriteHTTP(r.Context(), w, err)
 		return
 	}
 
