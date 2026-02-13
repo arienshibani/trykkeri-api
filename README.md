@@ -82,14 +82,6 @@ just watch
 # or: docker compose --profile observability watch
 ```
 
-**Pre-built image** (from [GitHub Container Registry](https://github.com/trykkeri/trykkeri-api/pkgs/container/trykkeri-api)):
-
-```bash
-docker run -p 8080:8080 ghcr.io/trykkeri/trykkeri-api:latest
-```
-
-Images are published on every push to `main` and when you create a release. Use `:latest`, `:sha-<commit>`, or a version tag (e.g. `:v1.0.0`) after a release.
-
 ### 3. Access the services
 
 - 🔍 **API / Scalar UI** — <http://localhost:8080> (available with either `just run` or `just watch`).
@@ -114,6 +106,19 @@ The service can be configured using environment variables. When you run the stac
 
 <img width="1452" height="1279" alt="image" src="https://github.com/user-attachments/assets/a6affe80-b3e3-45f6-be4e-8b7f7d6a96df" />
 
+<img width="1452" height="1279" alt="image" src="https://github.com/user-attachments/assets/a6affe80-b3e3-45f6-be4e-8b7f7d6a96df" />
+
 ### Grafana
 
 <img width="1127" height="1142" alt="image" src="https://github.com/user-attachments/assets/51758579-b8f2-4c86-b05b-dc1f552a9540" />
+
+
+### Pre-built image** 
+
+New image on every commit to main can be fetched from Github Container Registry.
+
+```bash
+docker run -p 8080:8080 ghcr.io/trykkeri/trykkeri-api:latest
+```
+
+Images are published on every push to `main` and when you create a release. Use `:latest`, `:sha-<commit>`, or a version tag (e.g. `:v1.0.0`) after a release.
