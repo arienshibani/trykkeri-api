@@ -10,6 +10,7 @@ func Routes(h *Handler) *chi.Mux {
 	r.Head("/health", h.Health)
 	r.Get("/favicon.ico", h.Favicon)
 	r.Post("/print", h.Print)
+	r.Post("/mirror", h.Mirror)
 	r.Get("/openapi.json", h.OpenAPI)
 	r.Get("/*", h.DocsUI)
 	return r
