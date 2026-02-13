@@ -5,11 +5,11 @@
 [![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker)](https://www.docker.com/)
 [![Grafana](https://img.shields.io/badge/Grafana-dashboard-F46800?logo=grafana)](https://grafana.com/)
 
-REST API for turning raw HTML into PDF files. Useful for generating PDF reports from HTML templates.
+REST API for turning raw HTML into PDF files. 
 
 ## Features ✨
 
-- **Grafana dashboard** - Preconfigured with a dashboard for monitoring usage and errors (when run with the observability stack).
+- **Grafana dashboard** - Preconfigured with a custom dashboard for monitoring usage and errors (when run with the observability stack).
 - **Scalar UI** - Interactive API docs for trying different HTML and query parameters.
 - **Tunable output** - Margins, page size, filename, DPI, orientation, background printing, grayscale etc. All using query parameters.
 
@@ -100,3 +100,12 @@ The service can be configured using environment variables. When you run the stac
 | `RENDER_TIMEOUT_MS` | The timeout in milliseconds for rendering a PDF | `30000` |
 | `WKHTMLTOPDF_PATH` | The path to the wkhtmltopdf binary | `wkhtmltopdf` |
 | `ALLOW_NET` | Whether to allow network access | `false` |
+
+## Screenshots 📸
+
+### API
+<img width="1452" height="1279" alt="image" src="https://github.com/user-attachments/assets/a6affe80-b3e3-45f6-be4e-8b7f7d6a96df" />
+
+
+### Grafana
+<img width="1127" height="1142" alt="image" src="https://github.com/user-attachments/assets/51758579-b8f2-4c86-b05b-dc1f552a9540" />
