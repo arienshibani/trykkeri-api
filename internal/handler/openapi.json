@@ -1,0 +1,85 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Trykkeri API",
+    "version": "1.0.0",
+    "description": "Production-ready HTTP API for converting HTML to PDF (Trykkeri)"
+  },
+  "tags": [
+    { "name": "Health", "description": "Health check endpoints" },
+    { "name": "Render", "description": "PDF rendering endpoints" }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": ["Health"],
+        "summary": "Health check",
+        "responses": {
+          "200": {
+            "description": "Service health check",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "ok" },
+                    "version": { "type": "string", "example": "1.0.0" },
+                    "uptime_seconds": { "type": "integer" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/print": {
+      "post": {
+        "tags": ["Render"],
+        "summary": "Convert HTML to PDF",
+        "parameters": [
+          { "name": "filename", "in": "query", "schema": { "type": "string" }, "description": "Output filename (Content-Disposition)" },
+          { "name": "base_url", "in": "query", "schema": { "type": "string" }, "description": "Base URL for relative assets" },
+          { "name": "page_size", "in": "query", "schema": { "type": "string", "example": "A4" } },
+          { "name": "margin_top_mm", "in": "query", "schema": { "type": "integer", "example": 10 } },
+          { "name": "margin_right_mm", "in": "query", "schema": { "type": "integer", "example": 10 } },
+          { "name": "margin_bottom_mm", "in": "query", "schema": { "type": "integer", "example": 10 } },
+          { "name": "margin_left_mm", "in": "query", "schema": { "type": "integer", "example": 10 } },
+          { "name": "dpi", "in": "query", "schema": { "type": "integer", "example": 300 } },
+          { "name": "print_background", "in": "query", "schema": { "type": "boolean", "example": true } },
+          { "name": "grayscale", "in": "query", "schema": { "type": "boolean", "example": false } },
+          { "name": "portrait", "in": "query", "schema": { "type": "boolean", "example": true }, "description": "true = portrait, false = landscape" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "text/html": {
+              "schema": {
+                "type": "string",
+                "example": "<!DOCTYPE html>\n<html>\n<head><meta charset=\"UTF-8\"></head>\n<body>\n<style>*{font-family:system-ui,sans-serif;box-sizing:border-box} body{padding:50px;color:#1e293b} header,tr,section{display:grid;grid-template-columns:1fr auto;border-bottom:1px solid #e2e8f0;padding:15px 0} h1{margin:0;font-size:32px;color:#4f46e5;letter-spacing:-1px} table{width:100%;border-collapse:collapse;margin:20px 0} th{text-align:left;font-size:10px;color:#64748b;text-transform:uppercase} td:last-child,th:last-child,section{text-align:right} section{border:0;background:#f8fafc;padding:20px;border-radius:8px;font-size:20px;font-weight:700}</style>\n<header><h1>INVOICE</h1><div><b>#INV-001</b><br>Due 30 Nov 2024</div></header>\n<main style=\"display:flex;justify-content:space-between;margin:30px 0\"><div><b>From:</b> Acme Inc.</div><div><b>To:</b> Client Name</div></main>\n<table><tr><th>Description<th>Qty<th>Price<th>Amount<tr><td>Consulting<td>10<td>$150<td>$1,500<tr><td>Design<td>1<td>$800<td>$800</table>\n<section><span>$2,300.00</span></section>\n</body>\n</html>"
+              },
+              "description": "HTML content to convert to PDF",
+              "example": "<!DOCTYPE html>\n<html>\n<head><meta charset=\"UTF-8\"></head>\n<body>\n<style>*{font-family:system-ui,sans-serif;box-sizing:border-box} body{padding:50px;color:#1e293b} header,tr,section{display:grid;grid-template-columns:1fr auto;border-bottom:1px solid #e2e8f0;padding:15px 0} h1{margin:0;font-size:32px;color:#4f46e5;letter-spacing:-1px} table{width:100%;border-collapse:collapse;margin:20px 0} th{text-align:left;font-size:10px;color:#64748b;text-transform:uppercase} td:last-child,th:last-child,section{text-align:right} section{border:0;background:#f8fafc;padding:20px;border-radius:8px;font-size:20px;font-weight:700}</style>\n<header><h1>INVOICE</h1><div><b>#INV-001</b><br>Due 30 Nov 2024</div></header>\n<main style=\"display:flex;justify-content:space-between;margin:30px 0\"><div><b>From:</b> Acme Inc.</div><div><b>To:</b> Client Name</div></main>\n<table><tr><th>Description<th>Qty<th>Price<th>Amount<tr><td>Consulting<td>10<td>$150<td>$1,500<tr><td>Design<td>1<td>$800<td>$800</table>\n<section><span>$2,300.00</span></section>\n</body>\n</html>",
+              "examples": {
+                "Invoice": {
+                  "summary": "Basic invoice (use this as default body)",
+                  "value": "<!DOCTYPE html>\n<html>\n<head><meta charset=\"UTF-8\"></head>\n<body>\n<style>*{font-family:system-ui,sans-serif;box-sizing:border-box} body{padding:50px;color:#1e293b} header,tr,section{display:grid;grid-template-columns:1fr auto;border-bottom:1px solid #e2e8f0;padding:15px 0} h1{margin:0;font-size:32px;color:#4f46e5;letter-spacing:-1px} table{width:100%;border-collapse:collapse;margin:20px 0} th{text-align:left;font-size:10px;color:#64748b;text-transform:uppercase} td:last-child,th:last-child,section{text-align:right} section{border:0;background:#f8fafc;padding:20px;border-radius:8px;font-size:20px;font-weight:700}</style>\n<header><h1>INVOICE</h1><div><b>#INV-001</b><br>Due 30 Nov 2024</div></header>\n<main style=\"display:flex;justify-content:space-between;margin:30px 0\"><div><b>From:</b> Acme Inc.</div><div><b>To:</b> Client Name</div></main>\n<table><tr><th>Description<th>Qty<th>Price<th>Amount<tr><td>Consulting<td>10<td>$150<td>$1,500<tr><td>Design<td>1<td>$800<td>$800</table>\n<section><span>$2,300.00</span></section>\n</body>\n</html>"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "PDF generated successfully",
+            "content": { "application/pdf": { "schema": { "type": "string", "format": "binary" } } }
+          },
+          "400": { "description": "Invalid input" },
+          "408": { "description": "Request timeout" },
+          "413": { "description": "Payload too large" },
+          "500": { "description": "PDF generation failed" }
+        }
+      }
+    }
+  }
+}
