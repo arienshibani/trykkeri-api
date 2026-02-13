@@ -115,8 +115,6 @@ The service can be configured using environment variables. When you run the stac
 
 <img width="1452" height="1279" alt="image" src="https://github.com/user-attachments/assets/a6affe80-b3e3-45f6-be4e-8b7f7d6a96df" />
 
-<img width="1452" height="1279" alt="image" src="https://github.com/user-attachments/assets/a6affe80-b3e3-45f6-be4e-8b7f7d6a96df" />
-
 ### Grafana
 
 <img width="1127" height="1142" alt="image" src="https://github.com/user-attachments/assets/51758579-b8f2-4c86-b05b-dc1f552a9540" />
