@@ -5,10 +5,11 @@
 [![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker)](https://www.docker.com/)
 [![Grafana](https://img.shields.io/badge/Grafana-dashboard-F46800?logo=grafana)](https://grafana.com/)
 
-REST API for turning raw HTML into PDF files. 
+REST API for turning raw HTML into PDF files, with built-in monitoring.
 
 ## Features ✨
 
+- **HTML to PDF** - Either supply raw HTML to `/print`, or use the `/mirror` endpoint to fetch the HTML directly from a webpage.
 - **Grafana dashboard** - Preconfigured with a custom dashboard for monitoring usage and errors (when run with the observability stack).
 - **Scalar UI** - Interactive API docs for trying different HTML and query parameters.
 - **Tunable output** - Margins, page size, filename, DPI, orientation, background printing, grayscale etc. All using query parameters.
@@ -24,8 +25,6 @@ curl http://localhost:8080/print \
   --header 'Accept: application/pdf' \
   --data '<h1 style="color: red; text-align: center">Hello world!</h1>'
 ```
-
-The response is a PDF. To save it to a file, add `-o output.pdf` or use the `filename` query parameter to control the suggested download name.
 
 ### Optional query parameters 🔧
 
@@ -107,6 +106,7 @@ The service can be configured using environment variables. When you run the stac
 
 <img width="1452" height="1279" alt="image" src="https://github.com/user-attachments/assets/a6affe80-b3e3-45f6-be4e-8b7f7d6a96df" />
 
+<img width="1452" height="1279" alt="image" src="https://github.com/user-attachments/assets/a6affe80-b3e3-45f6-be4e-8b7f7d6a96df" />
 
 ### Grafana
 

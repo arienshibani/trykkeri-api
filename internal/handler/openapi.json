@@ -7,7 +7,7 @@
   },
   "tags": [
     { "name": "Health", "description": "Health check endpoints" },
-    { "name": "Render", "description": "PDF rendering endpoints" }
+    { "name": "Trykkeri API", "description": "PDF rendering endpoints" }
   ],
   "paths": {
     "/health": {
@@ -35,8 +35,8 @@
     },
     "/print": {
       "post": {
-        "tags": ["Render"],
-        "summary": "Convert HTML to PDF",
+        "tags": ["Trykkeri API"],
+        "summary": "HTML to PDF",
         "parameters": [
           { "name": "filename", "in": "query", "schema": { "type": "string" }, "description": "Output filename (Content-Disposition)" },
           { "name": "base_url", "in": "query", "schema": { "type": "string" }, "description": "Base URL for relative assets" },
@@ -78,6 +78,45 @@
           "408": { "description": "Request timeout" },
           "413": { "description": "Payload too large" },
           "500": { "description": "PDF generation failed" }
+        }
+      }
+    },
+    "/mirror": {
+      "post": {
+        "tags": ["Trykkeri API"],
+        "summary": "URL to PDF",
+        "description": "Fetches the HTML at the given URL (from request body) and renders it to PDF. Same query options as POST /print. base_url defaults to the fetched URL. The URL must return HTTP 2xx; if the target returns 404 or 5xx, this endpoint returns an error.",
+        "parameters": [
+          { "name": "filename", "in": "query", "schema": { "type": "string" }, "description": "Output filename (Content-Disposition)" },
+          { "name": "base_url", "in": "query", "schema": { "type": "string" }, "description": "Override base URL for relative assets (default: fetched URL)" },
+          { "name": "page_size", "in": "query", "schema": { "type": "string", "example": "A4" } },
+          { "name": "margin_top_mm", "in": "query", "schema": { "type": "integer", "example": 10 } },
+          { "name": "margin_right_mm", "in": "query", "schema": { "type": "integer", "example": 10 } },
+          { "name": "margin_bottom_mm", "in": "query", "schema": { "type": "integer", "example": 10 } },
+          { "name": "margin_left_mm", "in": "query", "schema": { "type": "integer", "example": 10 } },
+          { "name": "dpi", "in": "query", "schema": { "type": "integer", "example": 300 } },
+          { "name": "print_background", "in": "query", "schema": { "type": "boolean", "example": true } },
+          { "name": "grayscale", "in": "query", "schema": { "type": "boolean", "example": false } },
+          { "name": "portrait", "in": "query", "schema": { "type": "boolean", "example": true }, "description": "true = portrait, false = landscape" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "text/plain": {
+              "schema": { "type": "string", "example": "https://example.com" },
+              "description": "URL to fetch (plain text)"
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "PDF generated successfully",
+            "content": { "application/pdf": { "schema": { "type": "string", "format": "binary" } } }
+          },
+          "400": { "description": "Invalid URL or target returned non-2xx" },
+          "408": { "description": "Request timeout" },
+          "413": { "description": "Target response too large" },
+          "500": { "description": "Fetch or PDF generation failed" }
         }
       }
     }
