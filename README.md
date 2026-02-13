@@ -122,7 +122,7 @@ The service can be configured using environment variables. When you run the stac
 <img width="1127" height="1142" alt="image" src="https://github.com/user-attachments/assets/51758579-b8f2-4c86-b05b-dc1f552a9540" />
 
 
-### Pre-built image** 
+### Pre-built image
 
 New image on every commit to main can be fetched from Github Container Registry.
 
