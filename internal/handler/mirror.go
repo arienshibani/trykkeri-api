@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"trykkeri-api/internal/errors"
+	"trykkeri-api/internal/ssrf"
 )
 
 const (
@@ -47,11 +48,23 @@ func (h *Handler) Mirror(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err := ssrf.BlockPrivateOrInternal(targetURL.Host); err != nil {
+		if err == ssrf.ErrHostBlocked {
+			errors.WriteHTTP(r.Context(), w, errors.InvalidInput("url host is not allowed: %v", err))
+			return
+		}
+		errors.WriteHTTP(r.Context(), w, errors.InvalidInput("url: %v", err))
+		return
+	}
+
 	client := &http.Client{
 		Timeout: mirrorFetchTimeout,
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			if len(via) >= 10 {
 				return errors.InvalidInput("too many redirects")
+			}
+			if err := ssrf.BlockPrivateOrInternal(req.URL.Host); err != nil {
+				return err
 			}
 			return nil
 		},
@@ -65,6 +78,10 @@ func (h *Handler) Mirror(w http.ResponseWriter, r *http.Request) {
 
 	resp, err := client.Do(req)
 	if err != nil {
+		if err == ssrf.ErrHostBlocked {
+			errors.WriteHTTP(r.Context(), w, errors.InvalidInput("url host is not allowed: %v", err))
+			return
+		}
 		errors.WriteHTTP(r.Context(), w, errors.PdfGeneration("fetch failed: %v", err))
 		return
 	}
