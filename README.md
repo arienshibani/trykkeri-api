@@ -1,79 +1,102 @@
-# Trykkeri
+# Trykkeri API 🖨️
 
-REST API for converting HTML to PDF.
+[![Go 1.22](https://img.shields.io/badge/Go-1.22-00ADD8?logo=go)](https://go.dev/)
+[![OpenAPI 3.0](https://img.shields.io/badge/OpenAPI-3.0-6BA539?logo=openapi-initiative)](https://swagger.io/specification/)
+[![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker)](https://www.docker.com/)
+[![Grafana](https://img.shields.io/badge/Grafana-dashboard-F46800?logo=grafana)](https://grafana.com/)
 
-## Quick Start
+REST API for turning raw HTML into PDF files. Useful for generating PDF reports from HTML templates.
 
-Clone the repository and build the Docker image.
+## Features ✨
 
-```bash
-docker build -t trykkeri-api:latest .
-```
+- **Grafana dashboard** - Preconfigured with a dashboard for monitoring usage and errors (when run with the observability stack).
+- **Scalar UI** - Interactive API docs for trying different HTML and query parameters.
+- **Tunable output** - Margins, page size, filename, DPI, orientation, background printing, grayscale etc. All using query parameters.
 
-Then run the built image:
+## Usage 🚀
 
-```bash
-docker run -p 8080:8080 trykkeri-api:latest
-```
-
-Or use the [just](https://github.com/casey/just) runner: `just docker-build` then `just docker-run`.
-
-**Local development (Go):**
+Send a `POST` request to `/print` with your HTML as the request body.
 
 ```bash
-go run ./cmd/server
+curl http://localhost:8080/print \
+  --request POST \
+  --header 'Content-Type: text/html' \
+  --header 'Accept: application/pdf' \
+  --data '<h1 style="color: red; text-align: center">Hello world!</h1>'
 ```
 
-Or build and run: `just run` (see below).
+The response is a PDF. To save it to a file, add `-o output.pdf` or use the `filename` query parameter to control the suggested download name.
 
-## API
+### Optional query parameters 🔧
 
-- `POST /print` - Convert HTML to PDF (accepts `text/html` body)
-  - Simply send a POST request with HTML content in the body to receive a PDF in response.
-  - Query parameters can be used to customize the output PDF (see below).
+| Parameter | Type | Description |
+| ----------- | ------ | ------------- |
+| `filename` | string | Suggested filename in `Content-Disposition` (default: `document.pdf`) |
+| `base_url` | string | Base URL for resolving relative links and assets in the HTML |
+| `page_size` | string | e.g. `A4`, `Letter` |
+| `portrait` | boolean | `true` = portrait, `false` = landscape |
+| `margin_top_mm` | integer | Top margin in mm |
+| `margin_right_mm` | integer | Right margin in mm |
+| `margin_bottom_mm` | integer | Bottom margin in mm |
+| `margin_left_mm` | integer | Left margin in mm |
+| `dpi` | integer | Output DPI (e.g. `300`) |
+| `print_background` | boolean | Include CSS background graphics |
+| `grayscale` | boolean | Render in grayscale |
 
-## Example
+Example with options:
 
 ```bash
-curl -X POST "http://localhost:8080/print?filename=test.pdf&page_size=A4" \
-  -H 'Content-Type: text/html' \
-  -o out.pdf \
-  -d '<html><head><meta charset="UTF-8"></head><body><h1>Test PDF</h1><p>This is a test document.</p></body></html>'
+curl 'http://localhost:8080/print?filename=report.pdf&page_size=A4&margin_top_mm=20&dpi=150' \
+  --request POST \
+  --header 'Content-Type: text/html' \
+  --data '<html><body><h1>Report</h1></body></html>'
 ```
 
-## Query Parameters
+## Quickstart 🏁
 
-All optional:
+Ensure you have the following installed
 
-- `filename` - Output filename (default: document.pdf)
-- `base_url` - Base URL for resolving relative assets
-- `page_size` - A4, Letter, etc. (default: A4)
-- `margin_*_mm` - Margins in mm (default: 10)
-- `dpi` - Render DPI (default: 300)
-- `print_background` - Include backgrounds (default: true)
-- `grayscale` - Grayscale mode (default: false)
-- `portrait` - true = portrait, false = landscape (default: true)
+- [Docker](https://www.docker.com/)
+- [Go](https://go.dev/)
+- [Justfile](https://github.com/casey/just) (optional, but recommended)
 
-### Environment variables:
+### 1. Clone the repository
 
-- `PORT` (default: 8080)
-- `MAX_BODY_BYTES` (default: 2000000)
-- `RENDER_TIMEOUT_MS` (default: 30000)
-- `WKHTMLTOPDF_PATH` (default: wkhtmltopdf)
-- `ALLOW_NET` (default: false)
-- `CORS_ORIGINS` (comma-separated, unset = permissive)
-- `JSON_LOGS` (default: false) – structured JSON logging for production/Loki
+```bash
+git clone https://github.com/trykkeri/trykkeri-api.git
+cd trykkeri-api
+```
 
-## Monitoring and logging
+### 2. Spin up the services
 
-The repo includes an optional observability stack (Grafana, Loki, Promtail) behind the `observability` profile.
+**API only** (Go, no Docker):
 
-- **App only:** `docker compose up --build` (or `docker compose watch` for rebuild-on-change).
-- **App + Grafana/Loki/Promtail:** `docker compose --profile observability up --build`.
+```bash
+just run
+# or: go run ./cmd/server
+```
 
-- **API:** <http://localhost:8080>  
-- **Grafana:** <http://localhost:3000> (default login: `admin` / `admin`). To override, set `GRAFANA_ADMIN_USER` and `GRAFANA_ADMIN_PASSWORD` in the environment or in a `.env` file (see `.env.example`). Grafana opens on the **trykkeri-api logs** dashboard by default.
+**Full stack** (API + Grafana, Loki, Promtail in Docker, with live reload):
 
-The app container is named `trykkeri-api`; logs appear in Loki under that name. The app runs with `JSON_LOGS=true` so log fields are structured for filtering.
+```bash
+just watch
+# or: docker compose --profile observability watch
+```
 
-**Note:** Promtail reads container logs from the Docker daemon. On Linux it works out of the box. On Docker Desktop (Mac/Windows), if logs do not appear, ensure the Docker socket and container log directory are available to the Promtail container (they are mounted in the default `docker-compose.yml`; some Docker Desktop setups may need the stack to run in a Linux context).
+### 3. Access the services
+
+- 🔍 **API / Scalar UI** — <http://localhost:8080> (available with either `just run` or `just watch`).
+- 🪵 **Grafana dashboard** — <http://localhost:3000> (only when you use `just watch`).
+
+## Configuration 🔧
+
+The service can be configured using environment variables. When you run the stack with Docker Compose, set these in a `.env` file in the project root—the same file used for Grafana (e.g. `GRAFANA_ADMIN_USER`). See [.env.example](.env.example) for a template.
+
+| Variable | Description | Default |
+| ---------- | ------------- | ------- |
+| `PORT` | The port the service listens on | `8080` |
+| `JSON_LOGS` | Whether to log in JSON format | `false` |
+| `MAX_BODY_BYTES` | The maximum body size in bytes | `2000000` |
+| `RENDER_TIMEOUT_MS` | The timeout in milliseconds for rendering a PDF | `30000` |
+| `WKHTMLTOPDF_PATH` | The path to the wkhtmltopdf binary | `wkhtmltopdf` |
+| `ALLOW_NET` | Whether to allow network access | `false` |
