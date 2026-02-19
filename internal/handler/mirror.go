@@ -1,6 +1,7 @@
 package handler
 
 import (
+	stderrors "errors"
 	"io"
 	"net/http"
 	"net/url"
@@ -38,24 +39,12 @@ func (h *Handler) Mirror(w http.ResponseWriter, r *http.Request) {
 		errors.WriteHTTP(r.Context(), w, errors.InvalidInput("invalid url: %v", err))
 		return
 	}
-	if targetURL.Scheme != "http" && targetURL.Scheme != "https" {
-		errors.WriteHTTP(r.Context(), w, errors.InvalidInput("url scheme must be http or https"))
-		return
-	}
-	if targetURL.Host == "" {
-		errors.WriteHTTP(r.Context(), w, errors.InvalidInput("url must have a host"))
+	if err := validateMirrorRequestURL(targetURL); err != nil {
+		errors.WriteHTTP(r.Context(), w, err)
 		return
 	}
 
-	client := &http.Client{
-		Timeout: mirrorFetchTimeout,
-		CheckRedirect: func(req *http.Request, via []*http.Request) error {
-			if len(via) >= 10 {
-				return errors.InvalidInput("too many redirects")
-			}
-			return nil
-		},
-	}
+	client := newMirrorHTTPClient()
 	req, err := http.NewRequestWithContext(r.Context(), http.MethodGet, targetURL.String(), nil)
 	if err != nil {
 		errors.WriteHTTP(r.Context(), w, errors.Internal("failed to create request: %v", err))
@@ -65,6 +54,10 @@ func (h *Handler) Mirror(w http.ResponseWriter, r *http.Request) {
 
 	resp, err := client.Do(req)
 	if err != nil {
+		if stderrors.Is(err, errors.ErrInvalidInput) {
+			errors.WriteHTTP(r.Context(), w, err)
+			return
+		}
 		errors.WriteHTTP(r.Context(), w, errors.PdfGeneration("fetch failed: %v", err))
 		return
 	}
